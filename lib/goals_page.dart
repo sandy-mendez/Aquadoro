@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:aquadoro/goal_card.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -7,7 +9,10 @@ class GoalsPage extends StatefulWidget {
   GoalsPageState createState() => GoalsPageState();
 }
 
-class GoalsPageState extends State<GoalsPage> {
+class GoalsPageState extends State<GoalsPage> with TickerProviderStateMixin {
+  final List<GoalCard> _metas = [];
+  int index;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +26,26 @@ class GoalsPageState extends State<GoalsPage> {
           Container(color: Colors.cyan[600]),
           Column(
             children: [
-              GoalCard(),
-              GoalCard(),
-              GoalCard(),
+              Flexible(
+                child: ListView.builder(
+                  itemBuilder: (_, int index) => _metas[index],
+                  itemCount: _metas.length,
+                ),
+              ),
+              //Expanded(child: Container()),
+              FloatingActionButton(
+                onPressed: () {
+                  _agregarCard();
+                },
+                child: Icon(
+                  Icons.add_circle_outline,
+                  color: Colors.cyan[50],
+                  size: 50,
+                ),
+              ),
+              Container(
+                height: 30,
+              ),
             ],
           ),
         ],
@@ -54,5 +76,25 @@ class GoalsPageState extends State<GoalsPage> {
             ),
       ),
     );
+  } //fade text
+
+  Void _agregarCard() {
+    final animationCards = new AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600),
+    );
+    GoalCard meta = new GoalCard(
+      animationController: animationCards,
+    );
+    setState(() {
+      _metas.insert(_metas.length, meta);
+    });
+    meta.animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    for (GoalCard meta in _metas) meta.animationController.dispose();
+    super.dispose();
   }
 }
