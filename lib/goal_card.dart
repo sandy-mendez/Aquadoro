@@ -83,8 +83,33 @@ class _GoalCardState extends State<GoalCard> {
     );
   } //build
 
+  String initialActivity() {
+    if (widget.actividad == null) {
+      return " ";
+    } else {
+      return "${widget.actividad.toString()}";
+    }
+  } //initialActivity
+
+  String initialConcentracion() {
+    if (widget.tConcentracion == null) {
+      return " ";
+    } else {
+      return "${widget.tConcentracion.toString()}";
+    }
+  } //initialConcentracion
+
+  String initialDescanso() {
+    if (widget.tDescanso == null) {
+      return " ";
+    } else {
+      return "${widget.tDescanso.toString()}";
+    }
+  } //initialdescanso
+
   Widget _actividadInput() {
     return TextFormField(
+      initialValue: initialActivity(),
       decoration: InputDecoration(
         labelText: "Actividad",
         labelStyle: TextStyle(fontSize: 13),
@@ -98,6 +123,7 @@ class _GoalCardState extends State<GoalCard> {
 
   Widget _concentracionInput() {
     return TextFormField(
+      initialValue: initialConcentracion(),
       keyboardType: TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
         labelText: "Focus",
@@ -112,6 +138,7 @@ class _GoalCardState extends State<GoalCard> {
 
   Widget _descansoInput() {
     return TextFormField(
+      initialValue: initialDescanso(),
       keyboardType: TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
         labelText: "Relax",

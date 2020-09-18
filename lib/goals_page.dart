@@ -28,7 +28,27 @@ class GoalsPageState extends State<GoalsPage> with TickerProviderStateMixin {
             children: [
               Flexible(
                 child: ListView.builder(
-                  itemBuilder: (_, int index) => _metas[index],
+                  itemBuilder: (_, int index) {
+                    return Dismissible(
+                      key: new UniqueKey(),
+                      child: _metas[index],
+                      background: Container(
+                        margin: EdgeInsets.all(10),
+                        padding: EdgeInsets.only(left: 10),
+                        alignment: AlignmentDirectional.centerStart,
+                        color: Colors.deepOrange[700],
+                        child: Icon(Icons.delete_outline),
+                      ),
+                      onDismissed: (direccion) {
+                        setState(() {
+                          print(_metas[index].actividad);
+                          _metas.removeAt(index);
+                          print("Despues de eliminar");
+                          print(_metas[index].actividad);
+                        });
+                      },
+                    );
+                  }, //=> _metas[index],
                   itemCount: _metas.length,
                 ),
               ),
