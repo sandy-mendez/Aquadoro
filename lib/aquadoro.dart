@@ -4,6 +4,8 @@ import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flare_flutter/flare_actor.dart';
 
 class Aquadoro extends StatefulWidget {
   Aquadoro({
@@ -37,9 +39,10 @@ class _AquadoroState extends State<Aquadoro> {
   bool botonDeshabilitado = false;
   bool resetDeshabilitado = false;
 
+  String animacionActual = 'Reset';
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     tiempoPantalla = '${widget.tConcentracion.toString()}:00';
     resetDeshabilitado = true;
@@ -49,31 +52,70 @@ class _AquadoroState extends State<Aquadoro> {
   Widget build(BuildContext context) {
     double ancho = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Aquadoro"),
-        backgroundColor: Colors.cyan[600],
-      ),
       body: Stack(
         children: [
-          Container(color: Colors.cyan[600]),
-          Center(
-            child: Column(
-              children: [
-                SizedBox(height: 40),
-                _contadorAquadoro(),
-                SizedBox(
-                  height: 20,
-                ),
-                _aquadoroStack(ancho),
-                Expanded(child: Container()),
-                _botones(),
-                Expanded(child: Container())
-              ],
+          fondoPomodoro(),
+          SafeArea(
+            child: Center(
+              child: Column(
+                children: [
+                  _nuestroAppBar(context),
+                  SizedBox(height: 40),
+                  _contadorAquadoro(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  _aquadoroStack(ancho, context),
+                  Expanded(child: Container()),
+                  _botones(),
+                  Expanded(child: Container())
+                ],
+              ),
             ),
           )
         ],
       ),
+    );
+  }
+
+  Widget fondoPomodoro() {
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: <Color>[Colors.cyan[400], Colors.cyan[800]])),
+    );
+  }
+
+  Widget _nuestroAppBar(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: 50,
+          child: FlatButton(
+              padding: EdgeInsets.only(right: 10, top: 10),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 35,
+                color: Colors.cyan[100],
+              )),
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.only(top: 10),
+            child: Text(
+              widget.actividad,
+              style: GoogleFonts.craftyGirls(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.cyan[50]),
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -200,20 +242,30 @@ class _AquadoroState extends State<Aquadoro> {
     }
   }
 
-  Widget _aquadoroStack(double anchoP) {
+  Widget _aquadoroStack(double anchoP, BuildContext context) {
     return Stack(
-      children: [
+      children: <Widget>[
         Container(
-          width: 357,
-          height: 357,
-          margin: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              image: DecorationImage(
-                  image: AssetImage('assets/Acuadoro.png'),
-                  fit: BoxFit.cover) //
-              ), //
+          width: 400,
+          height: 400,
+          child: FlareActor(
+            'assets/Aquadoroo.flr',
+            alignment: Alignment.center,
+            fit: BoxFit.cover,
+            animation: animacionActual,
+          ),
         ),
+        //Container(
+        //  width: 357,
+        //  height: 357,
+        //  margin: EdgeInsets.all(10),
+        //  decoration: BoxDecoration(
+        //      borderRadius: BorderRadius.circular(10.0),
+        //      image: DecorationImage(
+        //          image: AssetImage('assets/Acuadoro.png'),
+        //          fit: BoxFit.cover) //
+        //      ), //
+        //),
         //
         Positioned(
           top: 160,
@@ -225,13 +277,15 @@ class _AquadoroState extends State<Aquadoro> {
               Center(
                 child: Text(
                   tipoActividad,
-                  style: TextStyle(fontSize: 25, color: Colors.blueGrey[50]),
+                  style: GoogleFonts.craftyGirls(
+                      fontSize: 25, color: Colors.blueGrey[50]),
                 ),
               ),
               Center(
                 child: Text(
                   tiempoPantalla,
-                  style: TextStyle(fontSize: 25, color: Colors.blueGrey[50]),
+                  style: GoogleFonts.craftyGirls(
+                      fontSize: 25, color: Colors.blueGrey[50]),
                 ),
               )
             ]),
@@ -256,7 +310,8 @@ class _AquadoroState extends State<Aquadoro> {
                 children: <Widget>[
                   Text(
                     'Reset',
-                    style: TextStyle(fontSize: 25, color: Colors.teal[900]),
+                    style: GoogleFonts.craftyGirls(
+                        fontSize: 25, color: Colors.teal[900]),
                   ),
                   Icon(
                     Icons.rotate_left,
@@ -266,6 +321,7 @@ class _AquadoroState extends State<Aquadoro> {
                 ],
               ),
               onPressed: () {
+                animacionActual = 'Reset';
                 if (tConcentracionSeg > 1) {
                   revisarTiempoCon = true;
                   startState = 1;
@@ -294,7 +350,8 @@ class _AquadoroState extends State<Aquadoro> {
                 children: <Widget>[
                   Text(
                     tipoActividad,
-                    style: TextStyle(fontSize: 25, color: Colors.indigo[800]),
+                    style: GoogleFonts.craftyGirls(
+                        fontSize: 25, color: Colors.indigo[800]),
                   ),
                   Icon(
                     (kindActivity) ? Icons.adjust : Icons.album,
@@ -312,6 +369,7 @@ class _AquadoroState extends State<Aquadoro> {
                       setState(() {
                         botonDeshabilitado = true;
                         resetDeshabilitado = false;
+                        animacionActual = 'LoopFocus';
                       });
                       tConcentracionSeg = (widget.tConcentracion * 60);
                       Timer.periodic(Duration(seconds: 1), (t) {
@@ -351,6 +409,9 @@ class _AquadoroState extends State<Aquadoro> {
                             }
                             tConcentracionSeg--;
                           }
+                          if (tConcentracionSeg < 11) {
+                            animacionActual = 'FinFocus';
+                          }
                         });
                       });
                     }
@@ -362,6 +423,7 @@ class _AquadoroState extends State<Aquadoro> {
                       setState(() {
                         botonDeshabilitado = true;
                         resetDeshabilitado = false;
+                        animacionActual = 'LoopRelax';
                       });
                       tDescansoSeg = (widget.tDescanso * 60);
                       Timer.periodic(Duration(seconds: 1), (t) {
@@ -375,7 +437,7 @@ class _AquadoroState extends State<Aquadoro> {
                             resetDeshabilitado = true;
                             if (tConcentracionSeg < 1) {
                               startState = 1;
-                              tipoActividad = "Relax";
+                              tipoActividad = "Focus";
                               kindActivity = false;
                               tiempoPantalla =
                                   '${widget.tDescanso.toString()}:00';
@@ -395,6 +457,9 @@ class _AquadoroState extends State<Aquadoro> {
                               tiempoPantalla = '$m:$s';
                             }
                             tDescansoSeg--;
+                          }
+                          if (tDescansoSeg < 11) {
+                            animacionActual = 'FinRelax';
                           }
                         });
                       });
